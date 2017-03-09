@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"errors"
 )
 
 // Configuration options for creating a parser. Most options specify which
@@ -76,6 +77,11 @@ func NewParser(options ParseOption) Parser {
 // It returns a descriptive error if the spec is not valid.
 // It accepts crontab specs and features configured by NewParser.
 func (p Parser) Parse(spec string) (Schedule, error) {
+	spec = strings.TrimSpace(spec)
+	if len(spec)==0{
+		return nil,errors.New("Empty specs")
+	}
+
 	if spec[0] == '@' && p.options&Descriptor > 0 {
 		return parseDescriptor(spec)
 	}
